@@ -1,0 +1,135 @@
+/clear
+!*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+! main input file for simulate growth and remodeling for a cylinder case
+
+!*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+!---------------------------------------------------------
+! Preprocessing
+!---------------------------------------------------------
+! *Do,cc,0.05,0.13,0.04
+! ! *Do,ii,1.34,1.54,0.04
+! PARSAV
+! /CLEAR
+! PARRES
+/PREP7
+! Geometry and mesh
+XCENTER= 0
+YCENTER= 0
+RAD1=10
+RAD2=11.41
+DEPTH=90
+THETA1= 0
+THETA2=90
+
+CYLIND, RAD1, RAD2, -DEPTH, DEPTH, THETA1, THETA2
+
+
+ET,1,SOLID185
+
+/input,mesh,inp
+
+!!!!use the mix formulation u-p to calculate each node
+
+keyopt,1,6,1
+
+!!------------------------------------------------------
+!! define the material parameter and state variable
+!!------------------------------------------------------
+
+/input,material,inp
+
+!---------------------------------------------------------
+! Solution
+!---------------------------------------------------------
+
+! boundary condition
+
+/SOL
+
+ANTYPE,STATIC   
+NLGEOM,ON  
+OUTRES,ALL,ALL  
+OUTRES,SVAR,ALL 
+KBC,1
+! NROPT,full,CRPL,CRLIMIT
+! AUTOTS,AUTO
+EQSLV,sparse
+! CNVTOL,U,0.05,0.05
+! PRED,AUTO
+! SSTIF,ON
+! NROPT,OFF
+! BCSOPTION,,INCORE
+! NEQIT,26
+LNSRCH,on
+! PSTRES,ON
+! ERESX,YES
+
+! allow just radial displecement
+asel,s,loc,z,-depth 
+DA,ALL,Uz,0 
+
+allsel,all  
+
+asel,s,loc,z,depth  
+DA,ALL,Uz,0 
+
+allsel,all  
+
+asel,s,loc,Y,0
+DA,ALL,Uy,0
+allsel,all
+
+asel,s,loc,x,0
+DA,ALL,Ux,0
+allsel,all
+
+
+! simulation time with unit years
+time_step=50
+nsubst,time_step,time_step,time_step
+time,50
+OUTRES,ALL,ALL  
+OUTRES,SVAR,ALL 
+SOLVE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+!!!! mesh information
+FLST,5,4,4,ORDE,4   
+FITEM,5,2   
+FITEM,5,4   
+FITEM,5,-5  
+FITEM,5,7   
+CM,_Y,LINE  
+LSEL, , , ,P51X 
+CM,_Y1,LINE 
+CMSEL,,_Y   
+!*
+
+mesh_cir=32
+LESIZE,_Y1, , ,mesh_cir, , , , ,1 
+!*  
+FLST,5,4,4,ORDE,4   
+FITEM,5,1   
+FITEM,5,3   
+FITEM,5,6   
+FITEM,5,8   
+CM,_Y,LINE  
+LSEL, , , ,P51X 
+CM,_Y1,LINE 
+CMSEL,,_Y   
+!*  
+
+mesh_thick=4
+LESIZE,_Y1, , ,mesh_thick, , , , ,1  
+!*  
+FLST,5,4,4,ORDE,2   
+FITEM,5,9   
+FITEM,5,-12 
+CM,_Y,LINE  
+LSEL, , , ,P51X 
+CM,_Y1,LINE 
+CMSEL,,_Y   
+!*  
+
+mesh_axial=50
+LESIZE,_Y1, , ,mesh_axial, , , , ,1 
+!*  
+CM,_Y,VOLU  
+VSEL, , , ,       1 
+CM,_Y1,VOLU 
+CHKMSH,'VOLU'   
+CMSEL,S,_Y  
+!*  
+VSWEEP,_Y1  
+!*  
+CMDELE,_Y   
+CMDELE,_Y1  
+CMDELE,_Y2  
+!*  

@@ -1,0 +1,174 @@
+
+!define each element with a materal to define the fiber direction
+
+
+*GET,element_max,ELEM,0,NUM,MAXD
+*GET,element_min,ELEM,0,NUM,MIND
+
+!read how much lines in the txt file
+/INQUIRE,numlines,LINES,normal_info,txt
+
+
+!table normal direction for each element
+*DEL,mytable_normal,,NOPR
+*DIM,mytable_normal,TABLE,numlines-1,2 ! table array to hold data
+*TREAD,mytable_normal,normal_info,txt,,0
+
+*DEL,myarray_normal,,NOPR
+*DIM,myarray_normal,ARRAY,numlines,3
+*vfun,myarray_normal(1,1),copy,mytable_normal(0,0) ! Shift column to right
+*vfun,myarray_normal(1,2),copy,mytable_normal(0,1) ! Shift column to right
+*vfun,myarray_normal(1,3),copy,mytable_normal(0,2) ! Shift down and right
+
+!table axial direction for each element
+
+*DEL,mytable_axial,,NOPR
+*DIM,mytable_axial,TABLE,numlines-1,2 ! table array to hold data
+*TREAD,mytable_axial,axial_info,txt,,0
+
+*DEL,myarray_axial,,NOPR
+*DIM,myarray_axial,ARRAY,numlines,3
+*vfun,myarray_axial(1,1),copy,mytable_axial(0,0) ! Shift column to right
+*vfun,myarray_axial(1,2),copy,mytable_axial(0,1) ! Shift column to right
+*vfun,myarray_axial(1,3),copy,mytable_axial(0,2) ! Shift down and right
+
+!table circum direction for each element
+
+*DEL,mytable_circum,,NOPR
+*DIM,mytable_circum,TABLE,numlines-1,2 ! table array to hold data
+*TREAD,mytable_circum,circum_info,txt,,0
+
+*DEL,myarray_circum,,NOPR
+*DIM,myarray_circum,ARRAY,numlines,3
+*vfun,myarray_circum(1,1),copy,mytable_circum(0,0) ! Shift column to right
+*vfun,myarray_circum(1,2),copy,mytable_circum(0,1) ! Shift column to right
+*vfun,myarray_circum(1,3),copy,mytable_circum(0,2) ! Shift down and right
+
+!table for the prestretch value
+*DEL,mytable_prestretch,,NOPR
+*DIM,mytable_prestretch,TABLE,numlines-1,8 ! table array to hold data
+*TREAD,mytable_prestretch,prestretch,txt,,0
+
+*DEL,myarray_prestretch,,NOPR
+*DIM,myarray_prestretch,ARRAY,numlines,9
+*vfun,myarray_prestretch(1,1),copy,mytable_prestretch(0,0) ! Shift column to right
+*vfun,myarray_prestretch(1,2),copy,mytable_prestretch(0,1) ! Shift column to right
+*vfun,myarray_prestretch(1,3),copy,mytable_prestretch(0,2) ! Shift down and right
+*vfun,myarray_prestretch(1,4),copy,mytable_prestretch(0,3) ! Shift column to right
+*vfun,myarray_prestretch(1,5),copy,mytable_prestretch(0,4) ! Shift column to right
+*vfun,myarray_prestretch(1,6),copy,mytable_prestretch(0,5) ! Shift down and right
+*vfun,myarray_prestretch(1,7),copy,mytable_prestretch(0,6) ! Shift column to right
+*vfun,myarray_prestretch(1,8),copy,mytable_prestretch(0,7) ! Shift column to right
+*vfun,myarray_prestretch(1,9),copy,mytable_prestretch(0,8) ! Shift down and right
+
+*Do,ii,element_min,element_max,1
+
+    fr_x = myarray_normal(ii,1) !radial direction
+    fr_y = myarray_normal(ii,2)
+    fr_z = myarray_normal(ii,3)
+	
+	fc_x = myarray_circum(ii,1)!circumferential direction
+    fc_y = myarray_circum(ii,2)
+    fc_z = myarray_circum(ii,3)
+	
+	fa_x = myarray_axial(ii,1) !axial direction
+    fa_y = myarray_axial(ii,2)
+    fa_z = myarray_axial(ii,3)
+	Ge11 = myarray_prestretch(ii,1)
+	Ge12 = myarray_prestretch(ii,2)
+	Ge13 = myarray_prestretch(ii,3)
+	Ge21 = myarray_prestretch(ii,4)
+	Ge22 = myarray_prestretch(ii,5)
+	Ge23 = myarray_prestretch(ii,6)
+	Ge31 = myarray_prestretch(ii,7)
+	Ge32 = myarray_prestretch(ii,8)
+	Ge33 = myarray_prestretch(ii,9)
+	
+    ! define the material properties
+	G=72e-6
+	K=G*2*10
+	nu=(3*K-2*G)/(2*G+6*K)
+	E=3*K*(1-2*nu)
+	rho_elastine_initiale = 241.5
+	phi_c = 0.8
+	rho_totale_initiale = 892.5
+	Dmax = 0.6
+	time_damage =100/30! unit:DAYS
+	turnover_time = 101*12
+	gain_parameter_collagene =0.05*30/101
+	ANG = 90
+	k1c = 568e-6
+	k2c = 9
+	dep_stretch_c = 1.1
+	turnover_time_collagene = 41/30
+	Ldamage = 10
+	k1m = 7.6e-6
+	k2m = 11.4
+	ang_axial = 0
+	ang_cir = 90
+	ang_diag = 45
+	lamda_e_rr = 0.6
+	lamda_e_theta = 1.34
+	lamda_e_zz = 1.25
+
+	tb,user,ii,,41
+	tbdata,1,G,K,rho_elastine_initiale,phi_c,rho_totale_initiale,Dmax,
+	tbdata,7,time_damage,turnover_time,gain_parameter_collagene,ANG,k1c,k2c
+	tbdata,13,dep_stretch_c,turnover_time_collagene,Ldamage,k1m,k2m,ang_axial
+	tbdata,19,ang_cir,ang_diag,lamda_e_rr,lamda_e_theta,lamda_e_zz,fr_x
+	tbdata,25,fr_y,fr_z,fc_x,fc_y,fc_z,fa_x
+	tbdata,31,fa_y,fa_z,Ge11,Ge12,Ge13,Ge21
+	tbdata,37,Ge22,Ge23,Ge31,Ge32,Ge33
+
+	!deposition stretch collagene and SMCs
+	statev1 = 1
+	statev2 = 1
+	statev3 = 1
+	statev4 = 1
+	statev5 = 1
+	!density
+	statev6 = 241.5 ! elastine
+	statev7 = 65.1 !collagene axial
+	statev8 = 65.1 !collagene circonférentiel
+	statev9 = 260.4 !collagene diagonal
+	statev10 = 260.4 !collagene diagonal
+	statev11 =157.5!SMCs circonférentiel
+	statev12 =1 !ratio density
+
+	!homeostatic stress
+	statev13 = 0	
+	statev14 = 0
+	statev15 = 0 
+	statev16 = 0
+	statev17 = 0 
+
+	! diameter
+	statev18 = 0 
+	statev19 = 0	
+	statev20 = 0
+
+	!save deformation elastin totale
+    statev21 = 0
+	statev22 = 0
+	statev23 = 0
+	statev24 = 0
+	statev25 = 0
+	statev26 = 0
+	statev27 = 0
+	statev28 = 0
+	statev29 = 0
+
+	tb,state,ii,,29  ! Define material 1 has 3 state variable
+	tbdata,1,statev1,statev2,statev3,statev4,statev5,statev6  ! Initialize this state variable
+	tbdata,7,statev7, statev8,statev9,statev10,statev11,statev12
+	tbdata,13,statev13,statev14,statev15,statev16,statev17,statev18
+	tbdata,19,statev19,statev20,statev21,statev22,statev23,statev24
+	tbdata,25,statev25,statev26,statev27,statev28,statev29
+	
+	Type,1
+	mat,ii
+
+	Emodif,ii,mat,ii
+	
+	
+*Enddo
