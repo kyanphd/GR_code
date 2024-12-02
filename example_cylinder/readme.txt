@@ -13,3 +13,5 @@ ANSYS APDL version ≥ v221
 test_user_cylinder.inp: main input file for simulate growth and remodeling for a cylinder case
 materail.inp: define each element with a material index to define the fiber direction(axial, circum and normal); define the initial material propreties and state varaiable
 mesh.inp: define the mesh size for the cylinder
+prestretch.text: the prestretch value as a 3*3 matrice of deformation for each element
+normal/circum/axial_info: the fiber direction vectors for each element
